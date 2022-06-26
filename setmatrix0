@@ -1,0 +1,270 @@
+Problem Statement
+Given an ‘N’ x ‘M’ integer matrix, if an element is 0, set its entire row and column to 0's, and return the matrix. In particular, your task is to modify it in such a way that if a cell has a value 0 (matrix[i][j] == 0), then all the cells of the ith row and jth column should be changed to 0.
+
+
+
+Practice
+Guided Paths
+Interview Prep
+Challenges
+New
+
+Knowledge Centre
+New
+
+Community
+New
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Contributed By
+Tanishk Tonk
+|
+Level 1
+Brute-Force Approach
+The basic idea is to maintain another boolean matrix ‘isZero’ which stores whether our resultant matrix should contain a zero at a particular index or not. We can traverse every element of our original matrix. If the element is 0, then we traverse the complete row and complete column of that particular element and set isZero values accordingly to true for all the elements in that row and column.
+
+ 
+
+Algorithm: 
+
+ 
+
+setZeros(matrix)
+
+Store dimensions of the matrix in n and m
+Declare “isZero” boolean matrix of size n x m.
+Iterate over i from 0 to n
+Iterate over j from 0 to m
+If matrix[i][j] == 0
+Iterate over k from 0 to n
+Set isZero[k][j] = true
+Iterate over k from 0 to m
+Set isZero[i][k] = true
+Iterate over i from 0 to n
+Iterate over j from 0 to m
+If isZero[i][j] == true
+Set matrix[i][j] = 0
+Time Complexity
+O(N * M * (M + N)) where N & M are dimensions of the given matrix.
+ 
+
+We are traversing each element. For each element that is zero, we are traversing its complete row and column. So we have O(M * N) elements and for each element, we can traverse a row and a column in the worst case, i.e. O(M + N). So total complexity is O(M * N * (M + N).
+
+Space Complexity
+O(N * M) where N & M are dimensions of the given matrix.
+
+ 
+
+We need to declare a 2D boolean matrix of size n x m. So the total required space will be O(N * M).
+
+Previous
+Next
+ 
+Your Code
+Solution
+1
+/*
+2
+    Time Complexity: O(N * M * (N + M)) 
+3
+    Space Complexity:O(N * M) 
+4
+​
+5
+    Where N & M are dimensions of the given matrix.
+6
+*/
+7
+​
+8
+void setZeros(vector<vector<int>> &matrix)
+9
+{
+10
+    // Storing dimensions of matrix in n and m.
+11
+    int n = matrix.size();
+12
+    int m = matrix[0].size();
+13
+    
+14
+    // Declaring isZero boolean matrix.
+15
+    vector<vector<bool>> isZero(n,vector<bool>(m));
+16
+    
+17
+    // Traversing the original matrix.
+18
+    for(int i = 0; i < n; i++) {
+19
+        for(int j = 0; j < m; j++) {
+20
+            
+21
+            // If that element of the matrix is equal to 0.
+22
+            if(matrix[i][j] == 0) {
+23
+                
+24
+                // Traversing its complete column and setting all the isZero values to be true.
+25
+                for(int k = 0; k < n; k++) {
+26
+                    isZero[k][j] = true;
+27
+                }
+28
+                
+29
+                // Traversing its complete row and setting all the isZero values to be true.
+30
+                for(int k = 0; k < m; k++) {
+31
+                    isZero[i][k] = true;
+32
+                }
+33
+            }
+34
+        }
+35
+    }
+36
+    
+37
+    // Travrsing isZero and if isZero at an index is true then we replace that element with zero in original matrix.
+38
+    for(int i = 0; i < n; i++) {
+39
+        for(int j = 0; j < m; j++) {
+40
+            if(isZero[i][j]) {
+41
+                matrix[i][j] = 0;
+42
+            }
+43
+        }
+44
+    }
+45
+
+
+
+}
+
+
+Space saver
+The basic idea is to keep track of each row and each column and maintain two boolean arrays ‘rowZero’ and ‘colZero’ to store whether a particular row should be filled with all zeros or not and similarly another one for columns. We traverse each element and if the element is equal to 0 in the original matrix then we set ‘rowZero’ of its row and ‘colZero’ of its column to true. We iterate over ‘rowZero’ and set all the elements of all the rows to zero whose ‘rowZero’ is true and the same with columns while iterating on ‘colZero’.
+
+ 
+
+Algorithm: 
+
+ 
+
+setZeros(matrix)
+
+Store dimensions of matrix in n and m.
+Declare boolean arrays “rowZero” and “colZero” of size n and m respectively.
+Iterate over i from 0 to n
+Iterate over j from 0 to m
+If matrix[i][j] == 0
+Set colZero[j] = true
+Set rowZero[i] = true
+Iterate over i from 0 to n
+Iterate over j from 0 to m
+If rowZero[i] is true or colZero[j] is true
+Set matrix[i][j] = 0
+Time Complexity
+O(N * M) where N & M are dimensions of the given matrix.
+
+ 
+
+We are iterating over our matrix two times. So total complexity will be O(M * N) + O(M * N)
+
+= O(M * N).
+
+Space Complexity
+O(N + M) where N & M are dimensions of the given matrix.
+
+ 
+
+We have to store two boolean arrays “rowZero” and “colZero” of size N and M respectively. So total space required will be O(M) + O(N) = O(M + N).
+
+
+
+
+
+Super Space saver
+The basic idea is to store whether a complete row and complete column should be zero or not but instead of declaring extra memory for this purpose, we are using the first row and first column of the original matrix to store this information. We are using two independent variables to store these values for the first row and first column. So we only need constant space for those two variables. Like the last approach we first find out whether a row should or column should be filled with all zeros or not. And after that, the eligible rows and columns are filled with zeros.
+
+ 
+
+Algorithm: 
+
+ 
+
+setZeros(matrix)
+
+Store dimensions of the matrix in n and m.
+Declare boolean variables “firstRowZero” and “firstColZero” and initialize them to false.
+Traverse over the first row and if any of it is zero then set firstRowZero to true.
+Traverse over the first column and if any of it is zero then set firstColZero to true.
+Iterate over i from 1 to n
+Iterate over j from 1 to m
+If matrix[i][j] == 0
+Set matrix[i][0] = 0
+Set matrix[0][j] = 0
+Iterate over i from 1 to n
+Iterate over j from 1 to m
+If matrix[i][0] == 0 or matrix[0][j] == 0
+Set matrix[i][j] = 0
+If “firstColZero” is true
+Iterate over i from 0 to n
+Set matrix[i][0] = 0
+If “firstColZero” is true
+Iterate over j from 0 to m
+Set matrix[0][j] = 0
+Time Complexity
+O(N * M) where N & M are dimensions of the given matrix.
+
+ 
+
+We are iterating over our matrix two times. So total complexity will be O(M * N) + O(M * N)
+
+= O(M * N)
+
+Space Complexity
+O(1)
+
+ 
+
+We have to store two boolean variables. So we need constant storage space. Hence space required will be O(1).
+
+
+
