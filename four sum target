@@ -1,0 +1,69 @@
+HashMap
+We will store the sum of all possible pairs in a hashmap having sum as its key and a pair of indexes as its value.
+To find pair sum we run 2 nested loops for choosing the first and the second element of quadruple let us say their sum is arr[i] + arr[j] then we try to find the remaining sum ( target - arr[i] - arr[j] ) from the hashmap.
+If the hashmap contains a key = target - arr[i] - arr[j] that means we have a pair present in the hashmap such that their sum is ‘target’.
+In the next step similar to the above approach we must check whether these two pairs of elements have an element of arr[] in common or not for ensuring that the element is not considered more than once.
+For doing so we simply extract the indexes of other pairs ( target - arr[i] - arr[j] ) from the hashmap and check if the two indexes are different from ‘i’  and ‘j’ or not.
+Time Complexity
+O(N^2), where ‘N’ denotes the number of elements present in the array.
+
+
+Finding all possible pair sum takes N^2 time.
+
+Space Complexity
+O(N^2), where ‘N’ denotes the number of elements present in the array.
+
+
+We are storing the sum of all possible pairs in hashmap, Hence the space complexity is O(N^2).
+
+
+/*
+    Time Complexity: O(N^2)
+    Space complexity: O(N^2)
+
+    Where 'N' is the number of element present in the given array.
+*/
+
+#include <unordered_map>
+#include <vector>
+
+bool commonIdx(pair < int, int > p1, pair < int, int > p2) {
+    return p1.first == p2.first || p1.first == p2.second || p1.second == p2.first || p1.second == p2.second;
+}
+
+string fourSum(vector < int > arr, int target, int n) {
+    unordered_map < int, pair < int, int >> mp;
+    
+    /* 
+        Preparing a HashMap which will store sum of 
+        two elements of array arr[] as key and their 
+        indexes as value.
+    */
+    for (int i = 0; i < n - 1; ++i) {
+        for (int j = i + 1; j < n; ++j) {
+            mp[arr[i] + arr[j]] = {
+                i,
+                j
+            };
+        }
+    }
+
+    // Check on all possible pair sum which can be found in HashMap.
+    for (int i = 0; i < n - 1; ++i) {
+        for (int j = i + 1; j < n; ++j) {
+            int requiredSum = target - (arr[i] + arr[j]);
+            /* 
+                If HashMap contains required sum then we must 
+                ensure that both pairs does not contain common indexes.
+            */
+            if (mp.find(requiredSum) != mp.end() && !commonIdx(mp[requiredSum], {
+                    i,
+                    j
+                })) {
+                return "Yes";
+            }
+        }
+    }
+    // If we can not found the target sum then we return No.
+    return "No";
+}
