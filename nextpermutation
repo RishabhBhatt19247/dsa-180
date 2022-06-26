@@ -1,0 +1,192 @@
+Brute Force
+The basic idea is to generate all the possible permutations of ‘N’ integers and find the lexicographically next greater permutation.
+
+ 
+
+Steps are as follows:
+
+Generate all the possible permutations of ‘N’ integers.
+Store all the permutations in a 2D array/list.
+Sort the list of permutations in lexicographically ascending order.
+Find the index of the input permutation in the sorted list. Let say the index is ‘i’.
+If the given permutation is present at the end of the array/list, no other greater permutation can exist, so print the smallest permutation.
+Otherwise, return the permutation which is present at the (i+1)th index in the list.
+Time Complexity
+O((N * N!) * log(N * N!)), where ‘N!’ is the factorial of the length of the given permutation.
+
+ 
+
+Since we are generating and storing all possible permutations of ‘N’ length and then sorting them in lexicographical order. Thus, the overall time complexity will be O((N * N!) * log(N * N!)).
+
+Space Complexity
+O(N * N!), where ‘N’ is the length of the given permutation.
+
+ 
+
+Since we are storing all possible permutations of ‘N’ length. Thus, the overall space complexity will be O(N * N!).
+
+/*
+    Time Complexity : O((N*N!)*log(N*N!))
+    Space Complexity : O(N*N!)
+    
+    Where N! is the factorial of the length of the given permutation.
+*/
+
+#include <algorithm>
+
+// Generates all the permutations and store it in the vector.
+void getAllPermutations(vector<int> &permutation, int l, int r, vector<vector<int>> &permuations)
+{
+    // Base case.
+    if (l == r)
+    {
+        // Store the new permutation in the vector.
+        permuations.push_back(permutation);
+    }
+    else
+    {
+        // Make new permuations.
+        for (int i = l; i <= r; i++)
+        {
+            // Swapping.
+            swap(permutation[l], permutation[i]);
+
+            getAllPermutations(permutation, l + 1, r, permuations);
+
+            // Backtrack.
+            swap(permutation[l], permutation[i]);
+        }
+    }
+
+    return;
+}
+
+// Returns true if first permutation is smaller than the second one.
+bool comparePermutaions(vector<int> &a, vector<int> &b)
+{
+    for (int i = 0; i < a.size(); i++)
+    {
+        if (a[i] == b[i])
+        {
+            // Move to next element.
+            continue;
+        }
+
+        return (a[i] < b[i]);
+    }
+}
+vector<int> nextPermutation(vector<int> &permutation, int n)
+{
+    // To store all the permutations.
+    vector<vector<int>> permutations;
+
+    getAllPermutations(permutation, 0, n - 1, permutations);
+
+    // Sort the list of permutations lexicographically.
+    sort(permutations.begin(), permutations.end(), comparePermutaions);
+
+    // Iterate to find the index of the given permutaion 'p'.
+    for (int i = 0; i < permutations.size(); i++)
+    {
+        if (permutations[i] == permutation)
+        {
+            // Index of the given permutation found.
+            if (i == permutations.size() - 1)
+            {
+                // Next permutation not possible.
+                return permutations[0];
+            }
+            else
+            {
+                // Return the next greater one.
+                return permutations[i + 1];
+            }
+        }
+    }
+}
+
+
+
+Greedy
+The basic idea of this approach is to develop a greedy algorithm to find the lexicographically next greater permutation.
+
+First of all, note that a permutation of integers which is sorted in descending order, will not have any lexicographically greater permutation. For example, no next permutation will be possible for [4, 3, 2, 1].
+
+ 
+
+Now, consider two elements in the given permutation, P[i] and P[j] such that i < j. If P[i] < P[j], we can easily swap the ith and the jth element to generate a permutation which will be necessarily greater than the previous one. But in order to find the smallest among all of them we will have to choose (i, j) such that the ith element will be farthest from the front and if there are multiple options for the jth element, we will choose the smallest one. Why? Since we are considering the lexicographical ordering, a positive change in the element closer to front will generate a larger number than the other one. For example, consider [3, 4, 1, 2], if we choose i = 0, j = 1, then we will get next permutation [4, 3, 1, 2] and if we choose i = 2, j = 3, then we will get a lexicographically smaller permutation [3, 4, 2, 1]. Therefore, we should choose ‘i’ as large as possible.
+
+Now, consider the following steps:
+
+Start iterating from the end of the given permutation and search a pair of indexes (i, i+1) such that P[i] < P[i+1].
+If such a pair doesn’t exist, then the permutation is sorted in descending order. And as discussed above, the next permutation will be the lexicographically smallest permutation i.e. the reverse of the given permutation.
+Suppose we reached an index ‘i’ such that P[i] < P[i+1]. In this case, we can just swap to (i, i+1)th elements but the resulting permutation may not be the just next greater permutation. Therefore, we will start searching for the smallest element which will be on the right side of the ith element and is greater than the ith element. Let's say the index of that element is ‘j’.
+Now, swap P[i] and P[j]. After the swap operation, we will get a lexicographically greater permutation but that again may not be the immediate next one. Since the element at the ith index in the next permutation is greater than the ith element in the given permutation, we can sort all the elements after ith index in ascending order to ensure that the next permutation is just greater one.
+Now, notice that the ith index is the first index from the end for which P[i] < P[i+1], i.e. elements in the right side of the ith element must be sorted in descending order. And after doing the swap operation on ith and jth index this order won’t change. Why? Because jth element is the smallest element which is greater than the ith element; i.e. P[j-1] < P[i] < P[j]. Therefore, the resulting sequence (from (i+1)th element to end) is still sorted which means that in order to sort it in ascending order, we can just reverse it.
+Time Complexity
+O(N), where ‘N’ is the length of the given permutation.
+
+ 
+
+Since in the worst case we will traverse the whole permutation twice. So, the overall time complexity will be O(N).
+
+Space Complexity
+O(1).
+
+ 
+
+Since we are not using any extra space. So, the overall space complexity will be O(1).
+
+/*
+    Time Complexity : O(N)
+    Space Complexity : O(1)
+    
+    Where 'N' is the length of the given permutation.
+*/
+
+vector<int> nextPermutation(vector<int> &permutation, int n)
+{
+
+    // Start iterating from the end of the given permutation.
+    for (int i = n - 2; i >= 0; i--)
+    {
+
+        if (permutation[i] < permutation[i + 1])
+        {
+            // Decreasing element found.
+
+            // To store the index of just greater element.
+            int id = n - 1;
+
+            // Iterating to find the just greater element.
+            for (int j = i + 1; j < n; j++)
+            {
+                if (permutation[j] < permutation[i])
+                {
+                    // Element found.
+                    id = j - 1;
+                    break;
+                }
+            }
+
+            // Swap the ith and element at index 'id'.
+            swap(permutation[i], permutation[id]);
+
+            // Reverse rest of the elements.
+            for (int j = 0; j < (n - i) / 2; j++)
+            {
+                swap(permutation[i + 1 + j], permutation[n - 1 - j]);
+            }
+
+            return permutation;
+        }
+    }
+
+    // Next greater permuation doesn't exists. So, return the smallest one.
+    for (int i = 0; i < n; i++)
+    {
+        permutation[i] = i + 1;
+    }
+
+    return permutation;
+}
