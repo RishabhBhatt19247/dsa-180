@@ -1,0 +1,56 @@
+
+
+/*
+	Time complexity: O(K)
+	Space complexity: O(1)
+	
+	where K denotes the Kth person in line waiting to be served.
+*/
+
+public class Solution {
+	public static int ninjaAndLadoos(int row1[], int row2[], int m, int n, int k) {
+
+		int i = 0, j = 0;
+
+		// Iterate while i is less than m and j is less than n
+		while (i < m && j < n) {
+			if (i + j == k - 1) {
+				return Math.min(row1[i], row2[j]);
+			}
+
+			if (row1[i] < row2[j]) {
+				i++;
+			} else {
+				j++;
+			}
+
+		}
+
+		// Iterate while i is less than m
+		while (i < m) {
+			if (i + j == k - 1) {
+				return row1[i];
+			}
+
+			i++;
+		}
+
+		// Iterate while j is less than n
+		while (j < n) {
+			if (i + j == k - 1) {
+				return row2[j];
+			}
+
+			j++;
+		}
+
+		// This line never runs because we get our desired k in the above code.
+		return row2[i + j];
+
+	}
+}
+
+
+
+tc=O(k)
+sc=O(1)
