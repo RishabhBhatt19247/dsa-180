@@ -1,0 +1,63 @@
+/*
+	Time complexity: O(N) 
+	Space complexity: O(1)
+	
+	where 'N' is the total number of elements in the array.
+*/
+
+int longestSubSeg(vector<int> &arr , int n, int k) 
+{ 
+
+	// Stores count of zero in the array under consideration.
+    int cnt0 = 0;
+    int l = 0; 
+    int maxLen = 0; 
+  
+    // r decides current ending point, i.e. the right pointer.
+    for (int r = 0; r < n; r++) { 
+        if (arr[r] == 0) {
+            cnt0++; 
+        }
+  
+        // If there are more 0's move left pointer towards current ending point. 
+        while (cnt0 > k) { 
+            if (arr[l] == 0) {
+                cnt0--; 
+            }
+
+            l++; 
+        } 
+  
+        maxLen = max(maxLen, r - l + 1); 
+    }
+	
+    return maxLen; 
+} 
+
+
+
+Two - Pointer approach
+The idea is to use Two - Pointer approach. Let us take a subarray [l,r] which contains at-most ‘K’ zeroes. Let our left pointer be ‘l’ and right pointer be ‘r’. We always maintain our subsegment [l,r] to contain no more than ‘K’ zeroes by moving the left pointer ‘l’ accordingly. Check at every step for maximum size i.e. ‘r-l+1’.
+
+ 
+
+Algorithm :
+
+Take two pointers ‘l’ and ‘r’ representing left and right pointers respectively. Initialize both the pointers with 0.
+Keep on moving the right pointer ‘r’ until the count of 0’s in the subarray represented by [l,r] is less than equal to ‘K’ (maximum replacements possible).
+When the count of 0’s becomes more than ‘K’ shorten the subarray by incrementing the left pointer ‘l’ so that the count of 0’s in subarray [l,r] becomes equal to ‘K’.
+At every step update the length of the longest subarray found so far, print this value at the end.
+Time Complexity
+O(N), where ‘N’ is the number of elements in the array.
+
+ 
+
+There are two pointers traversing the whole array, so in the worst case both the pointer can reach the end of the array thus the time complexity will be O(N+N) = O(2*N)  = O(N).
+
+Space Complexity
+O(1)  
+
+ 
+
+Constant extra space is required.
+
