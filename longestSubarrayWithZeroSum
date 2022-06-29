@@ -1,0 +1,70 @@
+/*
+    Time Complexity: O(N)
+    Space Complexity: O(N)
+
+    Where 'N' denotes the number of elements of the array
+*/
+#include<unordered_map>
+#include<vector>
+int LongestSubsetWithZeroSum(vector<int>arr) 
+{
+    // Map to store the previous sums
+    unordered_map<int, int> presum;
+ 
+    int sum = 0; // Initialize the sum of elements
+    int maxLen = 0; // Initialize result
+    int n = arr.size();
+    // Traverse through the given array
+    for (int i = 0; i < n; i++) {
+        // Add current element to sum
+        sum += arr[i];
+ 
+        if (arr[i] == 0 && maxLen == 0)
+            maxLen = 1;
+        if (sum == 0)
+            maxLen = i + 1;
+ 
+        // Look for this sum in Hash table
+        if (presum.find(sum) != presum.end()) {
+            // If this sum is seen before, then update maxLen
+            maxLen = max(maxLen, i - presum[sum]);
+        }
+        else {
+            // Else insert this sum with index in hash table
+            presum[sum] = i;
+        }
+    }
+ 
+    return maxLen;
+}
+
+
+
+Hash Map
+  We can maintain a prefix sum for each index. We can check if standing at a particular index sum is zero. If it is zero, then we store the index value as the length of the sub-array. Then we hold the sum values in a hash map. If the present sum is previously present in the hash map, then it means starting from the previous index till the current index, we get another sub-array whose sum is zero. If the length of this sub-array is greater than the previously stored length, then we modify our answer with this value. 
+
+
+ The steps are as follows:
+
+We initialize ‘maxLen’  to store the length of the maximum subset whose sum is zero, ‘sum’ to store the present sum, and hashmap ‘presum’ to keep the previous sums.
+We will iterate over all the elements of the array, i.e., i = 0 to i = N - 1:
+We will store the sum of the elements till index i in ‘sum’.
+If ‘sum’ is zero, then we will store i + 1 in maxLen.
+If arr[i] is zero and maxLen is zero, then we will store 1 in maxLen.
+If ‘sum’ is not present in presum, we will store the maximum of ‘maxLen’ and i - presum[sum] in ‘maxLen’.
+We will store i in presum[sum].
+We will return ‘maxLen’ as the final answer.
+Time Complexity
+O(N), where N is the number of elements of the array.
+
+ 
+
+As we check for all values from1 to ‘N’, there are at most ‘N’ iterations. Hence, the overall complexity is O(N).
+
+Space Complexity
+O(N), where N is the number of elements of the array.
+
+ 
+
+We are using extra space to store prefix sum and using a hash map. Hence, the overall complexity is O(N).
+
