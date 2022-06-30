@@ -1,0 +1,95 @@
+Using Set
+In the above approach, for each index in the jobs array, we may have to traverse a boolean array of slots of size maxDeadline. However, we can optimize the above approach by using a set and applying a binary search on the elements of the set. So, we store the elements from maxDeadline to 1 in the set. We traverse the jobs array, and for each job, we find the nearest element present in the set that is less than or equal to the deadline of that job. If such an element exists in the set, then we add the profit to the answer and remove this element from the set.
+
+ 
+
+Algorithm
+
+ 
+
+Sort the jobs array in the descending order of the profit associated with each job. We can write our own comparator function to achieve this.
+Create two variables, maxProfit, and numberOfJobs. Initialize both of them to 0.
+Create a variable maxDeadline and find the maximum available deadline among all the jobs.
+Create a set named slots that store the elements in decreasing order. Insert all the elements from maxDeadline to 1 into the set.
+Run a loop from i = 0 to N and do:
+If the set is empty or jobs[i].deadline is less than the last element of the set, then we ignore this job as it can’t be completed and continue in the loop.
+Apply binary search on the set and find the nearest available slot that is less than or equal to jobs[i].deadline. Let’s name this as availableSlot.
+maxProfit = maxProfit + jobs[i].profit
+Increment numberOfJobs by 1.
+Remove the availableSlot from the set.
+Return the maxProfit and numberOfJobs.
+ 
+
+Note that, there is no in-built lower_bound or upper_bound function associated with the set data structure in python. So, we can implement the above approach in python by using a segment tree.
+
+Time Complexity
+O(N *log max(N, maxDeadline)), where ‘N’ denotes the number of elements of the array “jobs,” and ‘maxDeadline’ is the maximum available deadline among all the jobs.
+
+ 
+
+As for every index of the array “jobs”, we are applying binary search on a set of size maxDeadline. We are also sorting the “jobs” array of size N according to the decreasing order of profit. Hence, the time complexity will be O(N * log max(N, maxDeadline)).
+
+Space Complexity
+O(maxDeadline), where ‘maxDeadline’ is the maximum available deadline among all the jobs.
+
+ 
+
+The set has a size of ‘maxDeadline’.
+
+
+/*
+    Time Complexity : O(N *log max(N, maxDeadline))
+    Space Complexity : O(maxDeadline)
+
+    Where 'N' is size of the array "jobs" and 
+    'maxDeadline' is the maximum among all the deadlines.
+*/
+
+#include <algorithm>
+#include <set>
+
+// Custom Comparator function to sort the jobs in the decreasing order of their profit.
+bool compare(vector<int> &job1, vector<int> &job2)
+{
+    return job1[1] > job2[1];
+}
+
+int jobScheduling(vector<vector<int>> &jobs)
+{
+
+    sort(jobs.begin(), jobs.end(), compare);
+
+    int maxProfit = 0;
+    int maxDeadline = 0;
+
+    // Find the maximum deadline among all the jobs.
+    for (int i = 0; i < jobs.size(); i++)
+    {
+        maxDeadline = max(maxDeadline, jobs[i][0]);
+    }
+
+    // Create a set "slots".
+    set<int, greater<int>> slots;
+
+    // Insert all the elements from maxDeadline to 1 into the set.
+    for (int i = maxDeadline; i > 0; i--)
+    {
+        slots.insert(i);
+    }
+
+    for (int i = 0; i < jobs.size(); i++)
+    {
+
+        // If the set is empty or the deadline is less than the last element of the set, then ignore this job.
+        if (slots.size() == 0 || jobs[i][0] < *slots.rbegin())
+        {
+            continue;
+        }
+
+        int availableSlot = *slots.lower_bound(jobs[i][0]);
+        maxProfit = maxProfit + jobs[i][1];
+        slots.erase(availableSlot);
+    }
+
+    return maxProfit;
+}
