@@ -1,0 +1,27 @@
+Optimized Greedy Approach
+We know that if we have an amount of X and a certain type of coin, say Y, then we can make a change of int(X/Y) coins and an amount of X%Y will remain unchanged. So, we can use this idea to further optimize our previous approach in which we were counting a coin again and again.
+
+ 
+
+Algorithm
+
+ 
+
+We will first sort the ‘denominations’ array/list, if not sorted.
+We initialize ‘coinsCount’ to 0 and traverse ‘denominations’ from the end to the beginning.
+Increment ‘coinsCount’ by int(AMOUNT / denominations[i]).
+Set ‘AMOUNT’ to AMOUNT % denominations[i].
+Finally, we return ‘coinsCount’ as our result.
+Time Complexity
+O(N), where N denotes the size of denomination array/list.
+
+ 
+
+In the worst case, we might end up picking every coin in our change.
+
+Space Complexity
+O(1)
+
+ 
+
+Constant space is used.
