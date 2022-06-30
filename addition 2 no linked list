@@ -1,0 +1,104 @@
+Iterative Approach
+The idea behind this approach is exactly similar to the previous approach. But here, instead of using recursion, we add the two linked lists iteratively.
+ 
+
+The steps are as follows:
+
+ 
+
+Let 'NODE1' and 'NODE2' denote the current node of the first list and the second list, respectively.
+Initially, 'NODE1' = 'HEAD1' and 'NODE2' = 'HEAD2'
+Create two variables ‘SUM’ and 'CARRY' which will be used to store the sum and carry generated in the current iteration and initialize them with zero.
+Repeat the following steps until both the lists are exhausted i.e. 'NODE1' != NULL OR 'NODE2' != NULL:
+Set 'SUM' = 'CARRY'.
+If 'NODE1' != NULL, then list 1 is not exhausted. So, add the current node’s value to the sum i.e. 'SUM' = 'SUM' + 'NODE1'.data. And move to the next node of the list i.e. 'NODE1' = 'NODE1'.next.
+If 'NODE2' != NULL, then list 2 is not exhausted. So, add the current node’s value to the sum i.e. 'SUM' = 'SUM' + 'NODE2'.data. And move to the next node of the list i.e. 'NODE2' = 'NODE2'.next.
+Get the next node of the sum list by creating a new node having data = 'SUM' % 10. And add this node to the sum list.
+Set 'CARRY' = 'SUM'/10.
+If 'CARRY' = 1, add a new node to the sum list having data = 1.
+Return the head of the sum list i.e ‘HEAD1’.
+Time Complexity
+O(M + N), where M and N are the number of nodes in the two linked lists. 
+
+ 
+
+We are traversing both the linked lists completely and it takes O(L) (where L is the number of nodes in the list) time to traverse each list. Hence, the overall time complexity is O(M+N). 
+
+Space Complexity
+O(Max(M, N)), where M and N are the number of nodes in the two linked lists. 
+
+ 
+
+Extra space is required for storing the sum list. The length of the sum list is O(Max(M, N)). Hence, the overall space complexity is O(Max(M, N)).
+
+/*
+    Time Complexity - O(M + N)
+    Space Complexity - O(Max(M, N))
+
+    Where 'M' and 'N' are the number of nodes in the two linked lists.
+*/
+
+Node *addTwoNumbers(Node *head1, Node *head2)
+{
+    // 'NODE1' and 'NODE2' point to the current node of the first and second list, respectively.
+    Node *node1 = head1;
+    Node *node2 = head2;
+
+    // 'SUMHEAD' stores the head of the sum list.
+    Node *sumHead = NULL;
+
+    Node *sumNode, *prev = NULL;
+
+    // 'SUM' and 'CARRY' store the sum and carry generated in the current iteration.
+    int sum = 0, carry = 0;
+
+    while (node1 != NULL || node2 != NULL)
+    {
+        sum = carry;
+
+        if (node1 != NULL)
+        {
+            // Add the current node's value to the sum.
+            sum += node1->data;
+
+            // Move to the next node of the list 1.
+            node1 = node1->next;
+        }
+
+        if (node2 != NULL)
+        {
+            // Add the current node's value to the sum.
+            sum += node2->data;
+
+            // Move to the next node of the list 2.
+            node2 = node2->next;
+        }
+
+        // Create the next node of the sum list.
+        sumNode = new Node(sum % 10);
+
+        // Add the node to the sum list.
+        if (sumHead == NULL)
+        {
+            // Node generated is the first node. So, update the head of sum list.
+            sumHead = sumNode;
+        }
+        else
+        {
+            // Add the node to the end of the list.
+            prev->next = sumNode;
+        }
+        prev = sumNode;
+
+        // Get the new carry.
+        carry = sum / 10;
+    }
+
+    if (carry > 0)
+    {
+        // Carry is generated from the last iteration. So, add a new node.
+        prev->next = new Node(carry);
+    }
+
+    return sumHead;
+}
